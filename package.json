@@ -1,0 +1,22 @@
+{
+  "name": "tinyauth",
+  "version": "1.0.0",
+  "description": "Secure, Simple, not scalable, but also not dependent on a database service: Authentication.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jacksonStone/tinyauth.git"
+  },
+  "author": "",
+  "license": "GPL-2.0",
+  "bugs": {
+    "url": "https://github.com/jacksonStone/tinyauth/issues"
+  },
+  "homepage": "https://github.com/jacksonStone/tinyauth#readme",
+  "dependencies": {
+    "bluebird": "^3.5.1"
+  }
+}
