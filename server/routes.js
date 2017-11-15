@@ -1,68 +1,56 @@
-const { getHandler } = require('./trafficControl')
-//Because native ES6 is trash
-var Promise = require("bluebird")
+const { getController } = require('./trafficControl')
+const { format, verify } = require('./incomingRequests')
 
-//This will formate a request object into a minimal form, and handle the flow of
-//control to controller handler methods
-function root(req, res) {
-	const method = req.method;
+//This connects 
+var router = function(req, res) {
 
-	const formattedReq = {
-		url : req.url,
-		method: method
+	if(!verify(req)) {
+		res.writeHead(401);
+		return res.end('Hmm, try again?');
 	}
 
-	const handler = getHandler(formattedReq);
-
-	if(!handler) {
+	const formattedReq = format.initial(req);
+	const controller = getController(formattedReq);
+	if(!controller) {
 		res.writeHead(404); 
-		res.end('Invalid Route');
+		return res.end('Invalid Route');
 	}
-  let body = [];
+	let handleBody;
+	//We don't want to do default body data gathering
+	if(controller.streamBody) {
+		handleBody = controller.handler(formattedReq, req);
+	} 
+	else {
+		//Want whole body at once
+		handleBody = format.attachBody(req, formattedReq)
+			.then(()=>{
+				return controller.handler(formattedReq);
+			})
+	}
 
-  return waitOnBody(req)
-  	.then(body => {
-  		formattedReq.body = body;
-  		return handler(formattedReq); 
-  	})
+  return handleBody
   	.then(handlerRes => {
-			console.log(handlerRes);
+
+  		//If our handler needs to set headers
+  		if(controller.headers) {
+  			res.writeHead(200, handlerRes.headers);
+  			res.write(handlerRes.body || "Ok");
+  			return res.end();
+  		}
+
 			if(typeof handlerRes === 'object') {
 				handlerRes = JSON.stringify(handlerRes);
 			}
 			res.writeHead(200);
-			res.write(handlerRes ||  "Consider it done!");
+			res.write(handlerRes ||  "Ok");
 			res.end();
 		})
 		.catch(err => {
-			res.writeHead(400); 
+			res.writeHead(400);
 			res.end(err.message);
 		});
 }
 
 
-function waitOnBody(request) {
-	return new Promise((resolve, reject) => {
-	  let body = [];
-	  request.on('error', (err) => {
-	    console.error(err);
-	    reject(err);
-	  }).on('data', (chunk) => {
-	    body.push(chunk);
-	  }).on('end', () => {
-	    body = Buffer.concat(body).toString();
-	    try {
-	    	body = JSON.parse(body);
-	    	resolve(body);
-	    } catch(e) {
-	    	reject(new Error('Only JSON please'));
-	    }
-	  });
-	})
-}
-
-
-module.exports = {
-	root:root
-};
+module.exports = router;
 

@@ -1,8 +1,6 @@
-//Because Redis is a bit overcomplicated sometimes
 const path = require("path");
 const fs = require("fs");
 const normalizedPath = path.join(__dirname, "../pseudoDB");
-const tableNames = fs.readdirSync(normalizedPath);
 const tableData = {};
 const hasChanged = {};
 console.log(tableNames);
