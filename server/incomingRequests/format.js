@@ -32,8 +32,9 @@ function waitOnBody(request) {
 	  	if(!body.length) {
 	  		resolve();
 	  	}
+	  	body = Buffer.concat(body);
 	    try {
-	    	body = JSON.parse(body);
+	    	body = JSON.parse(body.toString());
 	    	resolve(body);
 	    } catch(e) {
 	    	//Not JSON, accept anyway

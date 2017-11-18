@@ -26,11 +26,14 @@ function makeRequest(service, urlPath, headers, body, method) {
 	requestObject.headers = headers;
 	headers = attachContentLength(headers, body);
 	return new Promise((resolve, reject) => {
-		request = httpToUse.request(requestObject, res => {
+		request = httpToUse.request(requestObject, (res) => {
 			const formattedResponse = {};
-			return format.attachBody(formattedResponse, res)
+			return format.attachBody(res, formattedResponse)
 				.then(()=>{
-					resolve(formattedResponse)
+					console.log("RESPONSE!!!!");
+					formattedResponse.headers = res.headers;
+					console.log(formattedResponse);
+					resolve(formattedResponse);
 				})
 		});
 		request.on('error', e => {
@@ -44,7 +47,7 @@ function makeRequest(service, urlPath, headers, body, method) {
 }
 
 
-exports = makeRequest;
+module.exports = makeRequest;
 
 //Private
 
@@ -70,6 +73,7 @@ function getRequestObject(rootUrl) {
 }
 function attachKey(headers, serviceName) {
 	headers = headers || {};
+	console.log(keys);
 	if(!keys[serviceName]) throw new Error('No key in .env for: ' + serviceName);
 	headers['jasapi'] = keys[serviceName];
 	return headers;

@@ -9,8 +9,8 @@ function getObject(objectName) {
 }
 
 function setObject(objectName, body) {
-	return makeRequest('set-rsource?resource='+objectName, {}, body, 'post');
+	return makeRequest('/set-resource?resource='+objectName, {}, body, 'post');
 }
 
 
-exports = { getObject, setObject };
+module.exports = { getObject, setObject };

@@ -1,17 +1,15 @@
 const fs = require('fs');
 const path = require('path');
 const devMode = process.env.NODE_ENV !== 'production';
-const keys = {};
+let keys = {};
 
 if(!devMode) {
-	keys.awsClient = process.env.awsclient;
-	keys.awsSecret = process.env.awssecret;
-	keys.myKey = process.env.prodkey;
+
+	keys = process.env;
+
 } else {
 	let env = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../.env')));
-	keys.awsClient =  env.awsclient;
-	keys.awsSecret = env.awssecret;
-	keys.myKey = env.devkey;
+	keys = env;
 }
 
 exports.keys = keys;

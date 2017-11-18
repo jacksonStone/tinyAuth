@@ -1,16 +1,28 @@
-const DB = require('../littleDB');
+const db = require('../littleDB');
+const tableName = 'users';
+const { getSalt, hashPassword } = require('../utilities/cryptoStuff');
 
 function signup(formattedRequest) {
-	console.log(formattedRequest);
 	if(!formattedRequest.body) throwError();
-	const user = formattedRequest.body.username;
-	const password = formattedRequest.body.password;
-	if(!user || !password) throwError();
+	const username = formattedRequest.body.username;
+	const unHashedPassword = formattedRequest.body.password;
+	if(!username || !unHashedPassword) throwError();
+	
+	if(db.getRecord(tableName, username)) throwError('User exists!');
 
-	const currentUser = DB.getRecord('users', user);
-	if(currentUser) throwError('Already Exists');
+	const salt = getSalt();
+	const hashedPassword = hashPassword(unHashedPassword, salt);
 
-	DB.setRecord('users', user, {password: password, salt: '12345'});
+
+	const newUserRecord = {
+		username,
+		salt,
+		password: hashedPassword
+	};
+
+	db.setRecord(tableName, username, newUserRecord);
+
+	return 'Ok';
 }
 
 function throwError(errMessage){
@@ -20,5 +32,5 @@ function throwError(errMessage){
 module.exports = {
 	url:'/signup',
 	method:'post',
-	handler: signup
+	handler: signup,
 }

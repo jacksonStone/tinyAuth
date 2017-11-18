@@ -32,7 +32,7 @@ var router = function(req, res) {
   	.then(handlerRes => {
 
   		//If our handler needs to set headers
-  		if(controller.headers) {
+  		if(controller.headers && handlerRes.headers) {
   			res.writeHead(200, handlerRes.headers);
   			res.write(handlerRes.body || "Ok");
   			return res.end();
