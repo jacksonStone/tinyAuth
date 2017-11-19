@@ -1,6 +1,6 @@
 const http = require('http')
 const args = process.argv.slice(2)
-const router = require('./server/router');
+const router = require('dryrouter');
 console.log(router); 
 
 let isTesting = false

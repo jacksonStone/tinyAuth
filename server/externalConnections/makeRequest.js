@@ -1,8 +1,9 @@
 const Promise = require('bluebird');
 const https = require('https');
 const http = require('http');
-const { keys, devMode } = require('../keyKeeper');
-const { format } = require('../incomingRequests');
+const { keys, devMode } = require('keykeeper');
+const { attachBody } = require('formatrequest');
+
 const urlMappings = {
 	devMode: {
 		"thinPersist":"localhost:5003",
@@ -28,7 +29,7 @@ function makeRequest(service, urlPath, headers, body, method) {
 	return new Promise((resolve, reject) => {
 		request = httpToUse.request(requestObject, (res) => {
 			const formattedResponse = {};
-			return format.attachBody(res, formattedResponse)
+			return attachBody(res, formattedResponse)
 				.then(()=>{
 					console.log("RESPONSE!!!!");
 					formattedResponse.headers = res.headers;
