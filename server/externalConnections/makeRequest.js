@@ -31,9 +31,7 @@ function makeRequest(service, urlPath, headers, body, method) {
 			const formattedResponse = {};
 			return attachBody(res, formattedResponse)
 				.then(()=>{
-					console.log("RESPONSE!!!!");
 					formattedResponse.headers = res.headers;
-					console.log(formattedResponse);
 					resolve(formattedResponse);
 				})
 		});
@@ -74,7 +72,6 @@ function getRequestObject(rootUrl) {
 }
 function attachKey(headers, serviceName) {
 	headers = headers || {};
-	console.log(keys);
 	if(!keys[serviceName]) throw new Error('No key in .env for: ' + serviceName);
 	headers['jasapi'] = keys[serviceName];
 	return headers;
