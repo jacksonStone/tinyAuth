@@ -1,6 +1,8 @@
 const db = require('../littleDB');
 const tableName = 'users';
-const { getSalt, hashPassword } = require('../utilities/cryptoStuff');
+const { getSalt, hashPassword } = require('cryptoutils')(require('keykeeper').keys);
+const getCookie = require('../utilities/getCookie');
+
 
 function signup(formattedRequest) {
 	if(!formattedRequest.body) throwError();
@@ -22,7 +24,10 @@ function signup(formattedRequest) {
 
 	db.setRecord(tableName, username, newUserRecord);
 
-	return 'Ok';
+	return {
+		headers: getCookie(username),
+		body: 'Ok'
+	};
 }
 
 function throwError(errMessage){
@@ -33,4 +38,5 @@ module.exports = {
 	url:'/signup',
 	method:'post',
 	handler: signup,
+	headers: true,
 }

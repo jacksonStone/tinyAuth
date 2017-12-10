@@ -1,8 +1,10 @@
 
-const { getUser } = require('../utilities/cryptoStuff');
+const { getUser } = require('cryptoutils')(require('keykeeper').keys);
 
 function verifyUser(formattedRequest) {	
-	return getUser(formattedRequest);
+	var userName = getUser(formattedRequest);
+	if(!userName) throw new Error('Not authenticated');
+	return userName;
 }
 
 module.exports = {
