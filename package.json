@@ -17,7 +17,6 @@
   },
   "homepage": "https://github.com/jacksonStone/tinyauth#readme",
   "dependencies": {
-    "aws-sdk": "^2.149.0",
     "bluebird": "^3.5.1",
     "dryrouter": "git+https://github.com/jacksonStone/DRYRouter.git",
     "formatrequest": "git+https://github.com/jacksonStone/formatRequest.git",
